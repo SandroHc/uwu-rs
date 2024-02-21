@@ -1,0 +1,7 @@
+[*]
+# Unix-style newlines
+end_of_line = lf
+insert_final_newline = true
+
+[*.{rs,js,ts,svelte,html,json,scss}]
+indent_style = tab
