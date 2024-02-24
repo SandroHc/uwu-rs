@@ -8,9 +8,6 @@ const config = {
 		adapter: adapter({
 			precompress: true,
 		}),
-		alias: {
-			$wasm: "../crates/uwu_wasm/pkg",
-		},
 		inlineStyleThreshold: Infinity,
 	},
 };

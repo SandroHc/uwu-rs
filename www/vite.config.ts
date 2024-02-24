@@ -10,13 +10,6 @@ export default defineConfig({
 		sveltekit(),
 		wasm(),
 	],
-	server: {
-		fs: {
-			allow: [
-				"../crates/uwu_wasm/pkg/uwu_bg.wasm",
-			]
-		}
-	},
 	test: {
 		include: ["src/**/*.{test,spec}.{js,ts}"]
 	}

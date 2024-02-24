@@ -1,5 +1,6 @@
 [package]
 name = "uwu"
+description = "uwuifying library"
 version.workspace = true
 authors.workspace = true
 edition.workspace = true

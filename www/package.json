@@ -5,7 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "pnpm run wasm && vite dev",
-		"build": "pnpm run wasm && vite build",
+		"build": "vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
@@ -13,7 +13,7 @@
 		"wasm": "wasm-pack build ../crates/uwu_wasm --target web --out-name uwu"
 	},
 	"dependencies": {
-		"uwu-rs": "^0.1.0"
+		"uwu-rs": "0.1.0"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-static": "^3.0.1",

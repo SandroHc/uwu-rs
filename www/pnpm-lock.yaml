@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   uwu-rs:
-    specifier: ^0.1.0
-    version: link:../crates/uwu_wasm/pkg
+    specifier: 0.1.0
+    version: 0.1.0
 
 devDependencies:
   '@sveltejs/adapter-static':
@@ -1486,6 +1486,10 @@ packages:
   /ufo@1.4.0:
     resolution: {integrity: sha512-Hhy+BhRBleFjpJ2vchUNN40qgkh0366FWJGqVLYBHev0vpHTrXSA0ryT+74UiW6KWsldNurQMKGqCm1M2zBciQ==}
     dev: true
+
+  /uwu-rs@0.1.0:
+    resolution: {integrity: sha512-iOgZK/sdrjzrgh20NLtHY3yNQgTBpjBGfYbLXvfNkcBtylFe1EhwE6hXuEO3XusS7m8aRPqbUvY4f2NBEIzfQw==}
+    dev: false
 
   /vite-node@1.3.1(sass@1.71.0):
     resolution: {integrity: sha512-azbRrqRxlWTJEVbzInZCTchx0X69M/XPTCz4H+TLvlTcR/xH/3hkRqhOakT41fMJCMzXTu4UvegkZiEoJAWvng==}

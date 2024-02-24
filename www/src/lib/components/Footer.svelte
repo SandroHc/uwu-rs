@@ -4,7 +4,7 @@
 <footer>
 	v0
 	&bullet;
-	created by <a href="https://github.com/SandroHc" target="_blank">SandroHc</a>
+	created by <a href="https://github.com/SandroHc/uwu" target="_blank">SandroHc</a>
 </footer>
 
 <style lang="scss">
