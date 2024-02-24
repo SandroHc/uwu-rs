@@ -1,30 +1,27 @@
 <script lang="ts">
-	import {onMount} from "svelte";
 	import init, {uwuify} from "../../../../pkg/uwu";
 
 	let input = "";
-	let loaded = false;
+	let loading = true;
 
-	onMount(async () => {
-		await init();
-		loaded = true;
-	});
-
-	function translate(input: string) {
-		if (!loaded) {
-			return input;
-		}
-		return uwuify(input);
-	}
+	init().then(() => (loading = false));
 </script>
 
 <div class="card">
 	<!-- svelte-ignore a11y-autofocus -->
 	<textarea autofocus class="input" placeholder="Enter your text" bind:value={input}/>
 
-	<div class="translated">
-		{translate(input)}
-	</div>
+	{#if input}
+		<div class="translated">
+			{#if loading}
+				<div class="loading">
+					...
+				</div>
+			{:else}
+				{uwuify(input)}
+			{/if}
+		</div>
+	{/if}
 </div>
 
 <style lang="scss">
@@ -34,7 +31,7 @@
 
 		background-color: var(--background-color-darker-1);
 		border: $border-width solid var(--background-color-darker-1);
-		border-radius: calc($radius - $border-width*2);
+		border-radius: calc($radius - $border-width * 2);
 		min-width: 600px;
 		max-width: 600px;
 
@@ -44,7 +41,7 @@
 
 		.input {
 			background-color: var(--background-color-lighter-1);
-			border-radius: calc($radius - $border-width*2);
+			border-radius: calc($radius - $border-width * 2);
 			border: none;
 			color: var(--text-color);
 			font-family: inherit; // Override default monospaced font
@@ -58,6 +55,24 @@
 		}
 
 		.translated {
+		}
+	}
+
+	.loading {
+		@media (prefers-reduced-motion: no-preference) {
+			--bg-size: 200%;
+			--color-one: var(--text-color);
+			--color-two: var(--text-color-lighter-1);
+			animation: breathe 2s infinite linear;
+			background: linear-gradient(90deg, var(--color-one), var(--color-two), var(--color-one)) 0 0 / var(--bg-size) 100%;
+			background-clip: text;
+			color: transparent;
+
+			@keyframes breathe {
+				to {
+					background-position: var(--bg-size) 0;
+				}
+			}
 		}
 	}
 </style>

@@ -40,7 +40,7 @@
 			color: var(--text-color-lighter-1);
 			font-weight: normal;
 			font-size: 1.25em;
-			margin: 0 auto 2em auto;
+			margin: 0 auto;
 		}
 	}
 </style>
