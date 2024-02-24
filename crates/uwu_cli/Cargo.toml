@@ -7,5 +7,8 @@ repository.workspace = true
 license.workspace = true
 
 [dependencies]
+clap = { version = "4.5.1", features = ["derive"] }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
 uwu = { workspace = true }
-
