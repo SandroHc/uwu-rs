@@ -1,8 +1,9 @@
 <script lang="ts">
+	const version = __UWU_VERSION__;
 </script>
 
 <footer>
-	v0
+	v{version}
 	&bullet;
 	created by <a href="https://github.com/SandroHc/uwu" target="_blank">SandroHc</a>
 </footer>
