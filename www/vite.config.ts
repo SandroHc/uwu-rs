@@ -13,7 +13,7 @@ export default defineConfig({
 	server: {
 		fs: {
 			allow: [
-				"../pkg/uwu_bg.wasm",
+				"../crates/uwu_wasm/pkg/uwu_bg.wasm",
 			]
 		}
 	},

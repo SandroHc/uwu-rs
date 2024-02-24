@@ -1,8 +1,9 @@
 <script lang="ts">
 	import {onMount} from "svelte";
-	import init, {uwuify} from "$wasm/uwu";
+	//import init, {uwuify} from "$wasm/uwu";
+	import init, {uwuify} from "uwu-rs";
 
-	let input = "";
+	let input = "Please DO NOT announce to the server when you are going to go masturbate. This has been a reoccurring issue, and I'm not sure why some people have such under developed social skills that they think that a server full of mostly male strangers would need to know that. No one is going to be impressed and give you a high five (especially considering where that hand has been). I don't want to add this to the rules, since it would be embarrassing for new users to see that we have a problem with this, but it is going to be enforced as a rule from now on. If it occurs, you will be warned, then additional occurrences will be dealt with at the discretion of mod staff. Thanks.";
 	let loading = true;
 
 	onMount(async () => {

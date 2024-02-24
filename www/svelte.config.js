@@ -9,7 +9,7 @@ const config = {
 			precompress: true,
 		}),
 		alias: {
-			$wasm: "../pkg",
+			$wasm: "../crates/uwu_wasm/pkg",
 		},
 		inlineStyleThreshold: Infinity,
 	},

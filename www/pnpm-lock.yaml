@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+dependencies:
+  uwu-rs:
+    specifier: ^0.1.0
+    version: link:../crates/uwu_wasm/pkg
+
 devDependencies:
   '@sveltejs/adapter-static':
     specifier: ^3.0.1

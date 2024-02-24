@@ -1,0 +1,11 @@
+[package]
+name = "uwu_cli"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+repository.workspace = true
+license.workspace = true
+
+[dependencies]
+uwu = { workspace = true }
+
