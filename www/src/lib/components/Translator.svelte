@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type {FormEventHandler} from "svelte/elements";
 	import {onMount} from "svelte";
 	import init, {uwuify} from "uwu-rs";
 
@@ -11,6 +12,12 @@
 		await init();
 		loading = false;
 	});
+
+	function fitInput(event: FormEventHandler<HTMLTextAreaElement>) {
+		const elem = event.currentTarget;
+		elem.style.height = "";
+		elem.style.height = elem.scrollHeight + "px";
+	}
 
 	async function copyToClipboard() {
 		try {
@@ -33,7 +40,7 @@
 
 <div class="card">
 	<!-- svelte-ignore a11y-autofocus -->
-	<textarea autofocus class="input" placeholder="write here :3" bind:value={input}/>
+	<textarea autofocus class="input" placeholder="write here :3" bind:value={input} on:input={fitInput}/>
 
 	{#if input}
 		{#if loading}
@@ -84,6 +91,7 @@
 		.translated {
 			color: var(--text-color-lighter-1);
 			cursor: pointer;
+			white-space: break-spaces;
 
 			&:hover,
 			&:focus {
