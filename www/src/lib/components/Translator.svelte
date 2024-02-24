@@ -4,11 +4,31 @@
 
 	let input = "";
 	let loading = true;
+	let copied = false;
+	$: translated = loading ? input : uwuify(input);
 
 	onMount(async () => {
 		await init();
 		loading = false;
 	});
+
+	async function copyToClipboard() {
+		try {
+			await navigator.clipboard.writeText(translated);
+
+			// Highlight text for 1 second to signal success
+			copied = true;
+			setTimeout(() => (copied = false), 1000);
+		} catch (error) {
+			console.error(error);
+		}
+	}
+
+	async function handleKeyPress(event: KeyboardEvent) {
+		if (event.key === "Enter") {
+			await copyToClipboard();
+		}
+	}
 </script>
 
 <div class="card">
@@ -16,15 +36,18 @@
 	<textarea autofocus class="input" placeholder="write here :3" bind:value={input}/>
 
 	{#if input}
-		<div class="translated">
-			{#if loading}
-				<div class="loading">
-					...
-				</div>
-			{:else}
-				{uwuify(input)}
-			{/if}
-		</div>
+		{#if loading}
+			<div class="loading">
+				...
+			</div>
+		{:else}
+			<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+			<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+			<div class="translated" class:copied={copied} tabindex="0" role="main" on:click={copyToClipboard}
+				 on:keyup={handleKeyPress}>
+				{translated}
+			</div>
+		{/if}
 	{/if}
 </div>
 
@@ -60,6 +83,20 @@
 
 		.translated {
 			color: var(--text-color-lighter-1);
+			cursor: pointer;
+
+			&:hover,
+			&:focus {
+				color: var(--text-color);
+			}
+
+			&.copied {
+				color: #ebffd1;
+			}
+
+			@media (prefers-reduced-motion: no-preference) {
+				transition: color 100ms ease-in;
+			}
 		}
 	}
 
