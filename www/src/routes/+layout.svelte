@@ -5,7 +5,7 @@
 
 <svelte:head>
 	<title>uwuify</title>
-	<meta name="description" content="uwuify your life"/>
+	<meta name="description" content="uwuify your life! :3"/>
 </svelte:head>
 
 <main>

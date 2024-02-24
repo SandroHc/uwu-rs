@@ -13,7 +13,7 @@
 
 <div class="card">
 	<!-- svelte-ignore a11y-autofocus -->
-	<textarea autofocus class="input" placeholder="Enter your text" bind:value={input}/>
+	<textarea autofocus class="input" placeholder="write here :3" bind:value={input}/>
 
 	{#if input}
 		<div class="translated">
@@ -59,6 +59,7 @@
 		}
 
 		.translated {
+			color: var(--text-color-lighter-1);
 		}
 	}
 
@@ -66,7 +67,7 @@
 		@media (prefers-reduced-motion: no-preference) {
 			--bg-size: 200%;
 			--color-one: var(--text-color);
-			--color-two: var(--text-color-lighter-1);
+			--color-two: var(--text-color-lighter-2);
 			animation: breathe 2s infinite linear;
 			background: linear-gradient(90deg, var(--color-one), var(--color-two), var(--color-one)) 0 0 / var(--bg-size) 100%;
 			background-clip: text;

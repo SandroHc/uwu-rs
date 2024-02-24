@@ -10,7 +10,7 @@
 
 <style lang="scss">
 	footer {
-		color: var(--text-color-lighter-1);
+		color: var(--text-color-lighter-2);
 		text-align: center;
 	}
 </style>

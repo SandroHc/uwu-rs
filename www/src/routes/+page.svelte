@@ -14,33 +14,16 @@
 <!--</div>-->
 
 <div class="header">
-	<div class="title">
-		uwuify
-	</div>
-	<div class="subtitle">
-		your personal uwu translator
-	</div>
+	uwuify
 </div>
 
 <Translator/>
 
 <style lang="scss">
 	.header {
-		gap: 0.5rem;
-		display: grid;
-
-		.title {
-			font-size: 3.5em;
-			font-weight: bold;
-			letter-spacing: -0.05em;
-			margin: 0 auto;
-		}
-
-		.subtitle {
-			color: var(--text-color-lighter-1);
-			font-weight: normal;
-			font-size: 1.25em;
-			margin: 0 auto;
-		}
+		font-size: 3.5em;
+		font-weight: bold;
+		letter-spacing: -0.05em;
+		margin: 0 auto;
 	}
 </style>

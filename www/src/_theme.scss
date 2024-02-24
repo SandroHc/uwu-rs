@@ -1,6 +1,7 @@
 :root {
 	--text-color: #000;
-	--text-color-lighter-1: #6b7280;
+	--text-color-lighter-1: #2d333f;
+	--text-color-lighter-2: #6b7280;
 	--background-color: #f3f4f6;
 	--background-color-lighter-1: #fff;
 	--background-color-darker-1: #e4e4e7;
@@ -12,7 +13,8 @@
 @media (prefers-color-scheme: dark) {
 	:root {
 		--text-color: #fff;
-		--text-color-lighter-1: #6b7280;
+		--text-color-lighter-1: #b0b8c7;
+		--text-color-lighter-2: #6b7280;
 		--background-color: #090a0e;
 		--background-color-lighter-1: #25262b;
 		--background-color-darker-1: #15161a;
