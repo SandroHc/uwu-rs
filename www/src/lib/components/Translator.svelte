@@ -62,15 +62,17 @@
 	.card {
 		$radius: 0.5rem;
 		$border-width: 1px;
+		$child-padding-x: 0.75rem;
+		$child-padding-y: 0.5rem;
 
 		background-color: var(--background-color-darker-1);
 		border: $border-width solid var(--background-color-darker-1);
 		border-radius: calc($radius - $border-width * 2);
-		min-width: 600px;
-		max-width: 600px;
+		width: 100%;
+		max-width: 40em;
 
 		> * {
-			padding: 0.5rem 0.75rem;
+			padding: $child-padding-y $child-padding-x;
 		}
 
 		.input {
@@ -82,6 +84,7 @@
 			margin: 0;
 			resize: vertical;
 			width: 100%;
+			min-height: calc(1em + $child-padding-y * 2); // Force height to show 1 line at all times
 
 			&:focus-visible {
 				outline: 2px solid var(--background-color-darker-2);

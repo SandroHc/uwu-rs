@@ -19,8 +19,12 @@
 		display: flex;
 		flex-direction: column;
 		flex-grow: 1;
-		gap: 2rem;
+		gap: 1rem;
 		justify-content: center;
 		align-items: center;
+
+		@media (width >= 1000px) {
+			gap: 2rem;
+		}
 	}
 </style>

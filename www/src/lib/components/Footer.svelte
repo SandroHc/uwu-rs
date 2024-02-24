@@ -11,6 +11,7 @@
 <style lang="scss">
 	footer {
 		color: var(--text-color-lighter-2);
+		margin-top: 1em;
 		text-align: center;
 	}
 </style>
