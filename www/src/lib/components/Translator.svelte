@@ -1,10 +1,14 @@
 <script lang="ts">
-	import init, {uwuify} from "../../../../pkg/uwu";
+	import {onMount} from "svelte";
+	import init, {uwuify} from "$wasm/uwu";
 
 	let input = "";
 	let loading = true;
 
-	init().then(() => (loading = false));
+	onMount(async () => {
+		await init();
+		loading = false;
+	});
 </script>
 
 <div class="card">
