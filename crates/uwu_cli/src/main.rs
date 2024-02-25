@@ -9,7 +9,7 @@ use tracing_subscriber::fmt;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
 
-use uwu::{Uwu, UwuError};
+use uwu_rs::{Uwu, UwuError};
 
 /// Converts text to an uwuified version.
 #[derive(Parser, Debug)]

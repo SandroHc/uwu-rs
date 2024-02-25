@@ -4,7 +4,7 @@ use crate::Uwu;
 ///
 /// Quick start:
 /// ```
-/// uwu::UwuBuilder::new()
+/// uwu_rs::UwuBuilder::new()
 ///     .lowercase()
 ///     .expressions()
 ///     .w_replace()

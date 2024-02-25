@@ -23,7 +23,7 @@ cargo add uwu-rs
 Then use it:
 
 ```rust
-let uwuified = uwu::Uwu::new().uwuify("Hello world!");
+let uwuified = uwu_rs::Uwu::new().uwuify("Hello world!");
 ```
 
 ### For JavaScript projects

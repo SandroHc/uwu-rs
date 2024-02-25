@@ -1,4 +1,4 @@
-use uwu::{Uwu, UwuBuilder};
+use uwu_rs::{Uwu, UwuBuilder};
 use wasm_bindgen::prelude::*;
 
 extern crate wee_alloc;

@@ -1,17 +1,20 @@
 [package]
-name = "uwu-rs"
+name = "uwu_wasm"
 version = "0.2.2"
 description = "uwuifying the web"
+keywords = ["uwu", "owo", "wasm", "web"]
+categories = ["algorithms", "text-processing", "command-line-utilities"]
+repository = "https://github.com/SandroHc/uwu-rs/tree/master/crates/uwu_wasm"
+documentation = "https://docs.rs/uwu_wasm"
 authors.workspace = true
 edition.workspace = true
-repository.workspace = true
 license.workspace = true
 
 [lib]
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-uwu = { workspace = true }
+uwu-rs = { workspace = true }
 wasm-bindgen = "0.2"
 wee_alloc = "0.4"
 

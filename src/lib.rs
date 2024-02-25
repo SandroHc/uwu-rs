@@ -11,13 +11,13 @@
 //! Then use it:
 //!
 //! ```rust
-//! let uwuified = uwu::Uwu::new().uwuify("Hello world!");
+//! let uwuified = uwu_rs::Uwu::new().uwuify("Hello world!");
 //! ```
 //!
 //! Or, if you want more control over the generated output:
 //!
 //! ```
-//! let uwu = uwu::Uwu::builder()
+//! let uwu = uwu_rs::Uwu::builder()
 //!     .lowercase()
 //!     .expressions()
 //!     .w_replace()
@@ -42,12 +42,12 @@ pub use builder::*;
 ///
 /// The simplest way to use it is:
 /// ```
-/// let uwuified = uwu::Uwu::new().uwuify("Hello world!");
+/// let uwuified = uwu_rs::Uwu::new().uwuify("Hello world!");
 /// ```
 ///
 /// But it is also possible to modify its behaviour with:
 /// ```
-/// let uwu = uwu::Uwu::builder()
+/// let uwu = uwu_rs::Uwu::builder()
 ///     .lowercase()
 ///     .expressions()
 ///     .w_replace()
@@ -106,7 +106,7 @@ impl Uwu {
     ///
     /// Example:
     /// ```
-    /// let uwuified = uwu::Uwu::new().uwuify("Hello world!");
+    /// let uwuified = uwu_rs::Uwu::new().uwuify("Hello world!");
     /// ```
     pub fn uwuify<S: AsRef<str>>(&self, input: S) -> Result<String, UwuError> {
         let mut input = input.as_ref().to_owned();
