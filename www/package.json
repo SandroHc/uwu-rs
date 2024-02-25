@@ -13,7 +13,7 @@
 		"wasm": "wasm-pack build ../crates/uwu_wasm --target web --out-name uwu"
 	},
 	"dependencies": {
-		"uwu-rs": "0.2.0"
+		"uwu-rs": "0.2.1"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-static": "^3.0.1",

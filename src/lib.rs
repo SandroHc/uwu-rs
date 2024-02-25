@@ -1,72 +1,64 @@
+//! Convert text to an uwuified version.
+//!
+//! ## Quick start
+//!
+//! Add the uwu library to your project with:
+//!
+//! ```shell
+//! cargo add uwu-rs
+//! ```
+//!
+//! Then use it:
+//!
+//! ```rust
+//! let uwuified = uwu::Uwu::new().uwuify("Hello world!");
+//! ```
+//!
+//! Or, if you want more control over the generated output:
+//!
+//! ```
+//! let uwu = uwu::Uwu::builder()
+//!     .lowercase()
+//!     .expressions()
+//!     .nya()
+//!     .w_replace()
+//!     .stutter(4)
+//!     .emojis(1)
+//!     .build();
+//! let uwuified = uwu.uwuify("Hello world!");
+//! ```
+
+#![warn(missing_docs)]
+
 use aho_corasick::{AhoCorasick, AhoCorasickBuilder, Input};
-use std::io::{Cursor, Write};
+use std::io::Write;
 use thiserror::Error;
 
-const EXPRESSION_PATTERNS: [&str; 7] = ["small", "cute", "fluff", "love", "stupid", "what", "meow"];
-const EXPRESSION_PATTERNS_REPLACE: [&str; 7] =
-    ["smol", "kawaii~", "floof", "luv", "baka", "nani", "nya~"];
+mod builder;
+mod dict;
 
-const NYA_PATTERNS: [&str; 3] = [" n", "\nn", "\tn"];
-const NYA_PATTERNS_REPLACE: [&str; 3] = [" ny", " ny", " ny"];
+pub use builder::*;
 
-const PUNCTUATION_PATTERNS: [&str; 3] = [", ", ". ", "! "];
-
-const EMOJIS: [&str; 31] = [
-    "rawr x3 ",
-    "OwO ",
-    "UwU ",
-    "o.O ",
-    "-.- ",
-    ">w< ",
-    "(⑅˘꒳˘) ",
-    "(ꈍᴗꈍ) ",
-    "(˘ω˘) ",
-    "(U ᵕ U❁) ",
-    "σωσ ",
-    "òωó ",
-    "(///ˬ///✿) ",
-    "(U ﹏ U) ",
-    "( ͡o ω ͡o ) ",
-    "ʘwʘ ",
-    ":3 ",
-    ":3 ", // important enough to have twice
-    "XD ",
-    "nyaa~~ ",
-    "mya ",
-    ">_< ",
-    "😳 ",
-    "🥺 ",
-    "😳😳😳 ",
-    "rawr ",
-    "^^ ",
-    "^•ﻌ•^ ",
-    "/(^•ω•^) ",
-    "(✿oωo) ",
-    "👉👈",
-];
-
-/// A uwu instance capable of running the uwu algorithm.
+/// An `Uwu` instance capable of running the uwu algorithm.
 ///
 /// The simplest way to use it is:
 /// ```
 /// let uwuified = uwu::Uwu::new().uwuify("Hello world!");
 /// ```
 ///
-/// But you can also modify its behaviour with:
+/// But it is also possiblee to modify its behaviour with:
 /// ```
-/// let uwu = uwu::Uwu {
-///     lowercase: false,
-///     expressions: false,
-///     nya: false,
-///     w_replace: false,
-///     stutter: false,
-///     stutter_chance: 0,
-///     emojis: false,
-///     emojis_chance: 0,
-/// };
+/// let uwu = uwu::Uwu::builder()
+///     .lowercase()
+///     .expressions()
+///     .nya()
+///     .w_replace()
+///     .stutter(4)
+///     .emojis(1)
+///     .build();
 /// let uwuified = uwu.uwuify("Hello world!");
 /// ```
-#[derive(Debug)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub struct Uwu {
     /// Enables the lowercase feature, e.g. 'Hello' becomes 'hello'. Beware that the other features
     /// may misbehave if this feature is disabled.
@@ -106,8 +98,14 @@ impl Default for Uwu {
 }
 
 impl Uwu {
+    /// Create a new instance of `Uwu` with defaults.
     pub fn new() -> Self {
         Self::default()
+    }
+
+    /// Create a new instance of a builder for the `Uwu` instance.
+    pub fn builder() -> UwuBuilder {
+        UwuBuilder::new()
     }
 
     /// Converts the input text into an uwuified version.
@@ -117,102 +115,160 @@ impl Uwu {
     /// let uwuified = uwu::Uwu::new().uwuify("Hello world!");
     /// ```
     pub fn uwuify<S: AsRef<str>>(&self, input: S) -> Result<String, UwuError> {
+        let mut input = input.as_ref().to_owned();
+
+        if self.lowercase {
+            input = input.to_ascii_lowercase();
+        }
+
+        let mut buf = input.into_bytes();
+        // Pad input with spaces so features that only operate after spaces work on the first and
+        // last word.
+        buf.insert(0, b' ');
+        buf.push(b' ');
+
         let mut rng = fastrand::Rng::with_seed(75777521); // 'uwu!' = 75 77 75 21
-        let input = " ".to_string() + &input.as_ref().to_ascii_lowercase() + " ";
 
-        // Expressions
-        let matcher_expr = AhoCorasick::new(EXPRESSION_PATTERNS)?;
-        let mut out_expr = Vec::with_capacity(input.len());
-        matcher_expr.try_stream_replace_all(
-            input.as_bytes(),
-            &mut out_expr,
-            EXPRESSION_PATTERNS_REPLACE.as_slice(),
+        if self.expressions {
+            buf = Self::do_expressions(buf)?;
+        }
+        if self.nya {
+            buf = Self::do_nya(buf)?;
+        }
+        if self.w_replace {
+            buf = Self::do_w_replace(buf)?;
+        }
+        if self.stutter {
+            buf = self.do_stutter(buf, &mut rng)?;
+        }
+        if self.emojis {
+            buf = self.do_emojis(buf, &mut rng)?;
+        }
+
+        // Remove the padding added in the start
+        if let Some(last) = buf.last() {
+            if *last == b' ' {
+                buf.pop();
+            }
+        }
+        if let Some(first) = buf.first() {
+            if *first == b' ' {
+                buf.remove(0);
+            }
+        }
+
+        let output = String::from_utf8_lossy(&buf).to_string();
+        Ok(output)
+    }
+
+    fn do_expressions(input: Vec<u8>) -> Result<Vec<u8>, UwuError> {
+        let mut buf = Vec::with_capacity(input.len());
+        let matcher = AhoCorasick::new(dict::EXPRESSION_PATTERNS)?;
+        matcher.try_stream_replace_all(
+            input.as_slice(),
+            &mut buf,
+            dict::EXPRESSION_PATTERNS_REPLACE.as_slice(),
         )?;
+        Ok(buf)
+    }
 
-        // Nya-ify
-        let matcher_nya = AhoCorasick::new(NYA_PATTERNS)?;
-        let mut out_nya = Vec::with_capacity(out_expr.len());
+    fn do_nya(input: Vec<u8>) -> Result<Vec<u8>, UwuError> {
+        let mut buf = Vec::with_capacity(input.len());
+        let matcher_nya = AhoCorasick::new(dict::NYA_PATTERNS)?;
         matcher_nya.try_stream_replace_all(
-            Cursor::new(out_expr),
-            &mut out_nya,
-            NYA_PATTERNS_REPLACE.as_slice(),
+            input.as_slice(),
+            &mut buf,
+            dict::NYA_PATTERNS_REPLACE.as_slice(),
         )?;
+        Ok(buf)
+    }
 
-        // Replace 'l' and 'r' with 'w'
-        out_nya.iter_mut().for_each(|byte| {
+    fn do_w_replace(mut input: Vec<u8>) -> Result<Vec<u8>, UwuError> {
+        input.iter_mut().for_each(|byte| {
             if matches!(byte, b'l' | b'r') {
                 *byte = b'w';
             }
         });
+        Ok(input)
+    }
 
-        // Stutter
-        let out_stutter = if out_nya.len() < 2 {
-            out_nya
-        } else {
-            let mut buf = Vec::with_capacity(out_nya.len());
-            let mut prev_idx = 0;
-            for mut idx in 0..out_nya.len() - 1 {
-                if out_nya[idx] == b' '
-                    && out_nya[idx + 1].is_ascii_alphabetic()
-                    && rng.u8(0..self.stutter_chance) == 0
-                {
-                    idx += 1;
-                    let section = &out_nya[prev_idx..idx];
-                    let ch = out_nya[idx];
-                    buf.write_all(section)?;
-                    buf.write_all(&[ch])?;
-                    buf.write_all(&[b'-'])?;
-                    prev_idx = idx;
-                }
-            }
-            // Dump remaining
-            buf.write_all(&out_nya[prev_idx..])?;
-            buf
-        };
+    fn do_stutter(&self, input: Vec<u8>, rng: &mut fastrand::Rng) -> Result<Vec<u8>, UwuError> {
+        if input.len() < 2 {
+            return Ok(input);
+        }
 
-        // Emojis
-        let matcher_punct = AhoCorasickBuilder::new().build(PUNCTUATION_PATTERNS)?;
-        let matches = matcher_punct
-            .try_find_iter(Input::new(&out_stutter))?
-            .map(|mat| mat.end())
-            .collect::<Vec<usize>>();
-        let out_emojis = if matches.is_empty() {
-            out_stutter
-        } else {
-            let mut buf = Vec::with_capacity(out_stutter.len());
-            let mut prev_idx = 0;
-            for idx in matches {
-                if rng.u8(0..self.emojis_chance) != 0 {
-                    continue;
-                }
-                let section = &out_stutter[prev_idx..idx];
-                let emoji = rng.choice(EMOJIS).unwrap_or("uwu");
+        let mut buf: Vec<u8> = Vec::with_capacity(input.len());
+        let mut prev_idx = 0;
+        for mut idx in 0..input.len() - 1 {
+            if input[idx] == b' '
+                && input[idx + 1].is_ascii_alphabetic()
+                && rng.u8(0..self.stutter_chance) == 0
+            {
+                idx += 1;
+                let section = &input[prev_idx..idx];
+                let ch = input[idx];
                 buf.write_all(section)?;
-                buf.write_all(emoji.as_bytes())?;
+                buf.write_all(&[ch])?;
+                buf.write_all(&[b'-'])?;
                 prev_idx = idx;
             }
-            // Dump remaining
-            buf.write_all(&out_stutter[prev_idx..])?;
-            buf
-        };
+        }
 
-        let converted = String::from_utf8_lossy(&out_emojis).trim().to_string();
-        Ok(converted)
+        // Dump remaining
+        buf.write_all(&input[prev_idx..])?;
+
+        Ok(buf)
+    }
+
+    fn do_emojis(&self, input: Vec<u8>, rng: &mut fastrand::Rng) -> Result<Vec<u8>, UwuError> {
+        let matcher = AhoCorasickBuilder::new().build(dict::PUNCTUATION_PATTERNS)?;
+        let matches = matcher
+            .try_find_iter(Input::new(&input))?
+            .map(|mat| mat.end())
+            .collect::<Vec<usize>>();
+        if matches.is_empty() {
+            return Ok(input);
+        }
+
+        let mut buf = Vec::with_capacity(input.len());
+        let mut prev_idx = 0;
+        for idx in matches {
+            if rng.u8(0..self.emojis_chance) != 0 {
+                continue;
+            }
+            let section = &input[prev_idx..idx];
+            let emoji = rng.choice(dict::EMOJIS).unwrap_or("uwu");
+            buf.write_all(section)?;
+            buf.write_all(emoji.as_bytes())?;
+            prev_idx = idx;
+        }
+
+        // Dump remaining
+        buf.write_all(&input[prev_idx..])?;
+
+        Ok(buf)
     }
 }
 
+/// A Uwu error.
 #[derive(Error, Debug)]
 pub enum UwuError {
+    /// Error building string matcher
     #[error("string matcher build error: {0}")]
     StringMatcherBuild(#[from] aho_corasick::BuildError),
+    /// Error in string match
     #[error("string matcher match error: {0}")]
     StringMatcherMatch(#[from] aho_corasick::MatchError),
+    /// IO error
     #[error("IO error: {0}")]
     Io(#[from] std::io::Error),
+    /// Unknown error
     #[error(transparent)]
     Unknown(#[from] Box<dyn std::error::Error + Send>),
 }
 
+/// Converts text to an uwuified version. This is a utility method for using
+/// `Uwu::new().uwuify("input")`.
 pub fn uwuify<S: AsRef<str>>(input: S) -> Result<String, UwuError> {
     let uwu = Uwu::new();
     uwu.uwuify(input)

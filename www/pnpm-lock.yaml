@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   uwu-rs:
-    specifier: 0.2.0
-    version: 0.2.0
+    specifier: 0.2.1
+    version: 0.2.1
 
 devDependencies:
   '@sveltejs/adapter-static':
@@ -1497,8 +1497,8 @@ packages:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
     dev: true
 
-  /uwu-rs@0.2.0:
-    resolution: {integrity: sha512-Tq+0edV0rlNUiUx6yZBtnYsiDtyrSUrzeRTw+0xULyEZScjk/TIXuG3OPx90a5GUxhd+sJ5rx/l3Mmzr4FVCtg==}
+  /uwu-rs@0.2.1:
+    resolution: {integrity: sha512-EjbiB1qHtHrBCR+a3z8REQxxwtzMACftipY4RmPQMkjA3FwGCHB3MUD/+pb5GNkMoV+gYp+qocZ2nesBupYHSQ==}
     dev: false
 
   /vite-node@1.3.1(@types/node@20.11.20)(sass@1.71.0):

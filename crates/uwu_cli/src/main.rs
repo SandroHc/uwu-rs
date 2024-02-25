@@ -9,11 +9,11 @@ use tracing_subscriber::fmt;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
 
-use uwu::UwuError;
+use uwu::{Uwu, UwuError};
 
+/// Converts text to an uwuified version.
 #[derive(Parser, Debug)]
 #[command(name = "uwu", version)]
-/// Converts text to an uwuified version.
 struct Cli {
     /// Input file to uwuify.
     #[arg(short, long, value_name = "FILE")]
@@ -55,7 +55,7 @@ fn main() -> Result<(), UwuCliError> {
     trace!("Arguments: {args:?}");
 
     let input = read_input(&args)?;
-    let uwuified = uwu::Uwu::new().uwuify(input)?;
+    let uwuified = Uwu::new().uwuify(input)?;
     write_output(uwuified, &args)?;
 
     Ok(())
@@ -102,6 +102,13 @@ fn read_input(args: &Cli) -> Result<String, UwuCliError> {
 }
 
 fn write_output(content: String, args: &Cli) -> Result<(), UwuCliError> {
+    let content = if args.json {
+        let sanitized = content.replace('"', "\\\"");
+        format!("{{\"output\": \"{sanitized}\"}}")
+    } else {
+        content
+    };
+
     if let Some(output) = &args.output {
         info!("Writing to file: {}", output.display());
         let mut f = std::fs::File::create(output)?;
