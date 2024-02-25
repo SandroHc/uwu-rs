@@ -1,14 +1,13 @@
-pub const EXPRESSION_PATTERNS: [&str; 7] =
-    ["small", "cute", "fluff", "love", "stupid", "what", "meow"];
-pub const EXPRESSION_PATTERNS_REPLACE: [&str; 7] =
-    ["smol", "kawaii~", "floof", "luv", "baka", "nani", "nya~"];
+pub const EXPRESSIONS: [&str; 9] = [
+    " n", " q", "small", "cute", "fluff", "love", "stupid", "what", "meow",
+];
+pub const EXPRESSIONS_REPLACE: [&str; 9] = [
+    " ny", " qw", "smol", "kawaii~", "floof", "luv", "baka", "nani", "nya~",
+];
 
-pub const NYA_PATTERNS: [&str; 3] = [" n", "\nn", "\tn"];
-pub const NYA_PATTERNS_REPLACE: [&str; 3] = [" ny", " ny", " ny"];
+pub const PUNCTUATION: [&str; 3] = [", ", ". ", "! "];
 
-pub const PUNCTUATION_PATTERNS: [&str; 3] = [", ", ". ", "! "];
-
-pub const EMOJIS: [&str; 31] = [
+pub const EMOJIS: [&str; 32] = [
     "rawr x3 ",
     "OwO ",
     "UwU ",
@@ -40,4 +39,5 @@ pub const EMOJIS: [&str; 31] = [
     "/(^•ω•^) ",
     "(✿oωo) ",
     "👉👈",
+    "*blushes*",
 ];

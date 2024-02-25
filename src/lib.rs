@@ -20,7 +20,6 @@
 //! let uwu = uwu::Uwu::builder()
 //!     .lowercase()
 //!     .expressions()
-//!     .nya()
 //!     .w_replace()
 //!     .stutter(4)
 //!     .emojis(1)
@@ -46,12 +45,11 @@ pub use builder::*;
 /// let uwuified = uwu::Uwu::new().uwuify("Hello world!");
 /// ```
 ///
-/// But it is also possiblee to modify its behaviour with:
+/// But it is also possible to modify its behaviour with:
 /// ```
 /// let uwu = uwu::Uwu::builder()
 ///     .lowercase()
 ///     .expressions()
-///     .nya()
 ///     .w_replace()
 ///     .stutter(4)
 ///     .emojis(1)
@@ -65,9 +63,6 @@ pub struct Uwu {
     pub lowercase: bool,
     /// Enables expression replacement, e.g. 'what' becomes 'nani'.
     pub expressions: bool,
-    /// Enables nyanification. Words started with 'n' will be appended a 'y', e.g. 'nanomachines'
-    /// becomes 'nyanomachines'.
-    pub nya: bool,
     /// Enables replacement of 'l' and 'r' with 'w', e.g. 'lovely' becomes 'wovewy'.
     pub w_replace: bool,
     /// Enables stutter, e.g. 'hello' becomes 'h-hello'.
@@ -87,7 +82,6 @@ impl Default for Uwu {
         Self {
             lowercase: true,
             expressions: true,
-            nya: true,
             w_replace: true,
             stutter: true,
             stutter_chance: 4,
@@ -127,22 +121,17 @@ impl Uwu {
         buf.insert(0, b' ');
         buf.push(b' ');
 
-        let mut rng = fastrand::Rng::with_seed(75777521); // 'uwu!' = 75 77 75 21
-
         if self.expressions {
             buf = Self::do_expressions(buf)?;
-        }
-        if self.nya {
-            buf = Self::do_nya(buf)?;
         }
         if self.w_replace {
             buf = Self::do_w_replace(buf)?;
         }
         if self.stutter {
-            buf = self.do_stutter(buf, &mut rng)?;
+            buf = self.do_stutter(buf)?;
         }
         if self.emojis {
-            buf = self.do_emojis(buf, &mut rng)?;
+            buf = self.do_emojis(buf)?;
         }
 
         // Remove the padding added in the start
@@ -163,22 +152,11 @@ impl Uwu {
 
     fn do_expressions(input: Vec<u8>) -> Result<Vec<u8>, UwuError> {
         let mut buf = Vec::with_capacity(input.len());
-        let matcher = AhoCorasick::new(dict::EXPRESSION_PATTERNS)?;
+        let matcher = AhoCorasick::new(dict::EXPRESSIONS)?;
         matcher.try_stream_replace_all(
             input.as_slice(),
             &mut buf,
-            dict::EXPRESSION_PATTERNS_REPLACE.as_slice(),
-        )?;
-        Ok(buf)
-    }
-
-    fn do_nya(input: Vec<u8>) -> Result<Vec<u8>, UwuError> {
-        let mut buf = Vec::with_capacity(input.len());
-        let matcher_nya = AhoCorasick::new(dict::NYA_PATTERNS)?;
-        matcher_nya.try_stream_replace_all(
-            input.as_slice(),
-            &mut buf,
-            dict::NYA_PATTERNS_REPLACE.as_slice(),
+            dict::EXPRESSIONS_REPLACE.as_slice(),
         )?;
         Ok(buf)
     }
@@ -192,12 +170,14 @@ impl Uwu {
         Ok(input)
     }
 
-    fn do_stutter(&self, input: Vec<u8>, rng: &mut fastrand::Rng) -> Result<Vec<u8>, UwuError> {
+    fn do_stutter(&self, input: Vec<u8>) -> Result<Vec<u8>, UwuError> {
         if input.len() < 2 {
             return Ok(input);
         }
 
         let mut buf: Vec<u8> = Vec::with_capacity(input.len());
+        let mut rng = Uwu::create_rng();
+
         let mut prev_idx = 0;
         for mut idx in 0..input.len() - 1 {
             if input[idx] == b' '
@@ -220,8 +200,8 @@ impl Uwu {
         Ok(buf)
     }
 
-    fn do_emojis(&self, input: Vec<u8>, rng: &mut fastrand::Rng) -> Result<Vec<u8>, UwuError> {
-        let matcher = AhoCorasickBuilder::new().build(dict::PUNCTUATION_PATTERNS)?;
+    fn do_emojis(&self, input: Vec<u8>) -> Result<Vec<u8>, UwuError> {
+        let matcher = AhoCorasickBuilder::new().build(dict::PUNCTUATION)?;
         let matches = matcher
             .try_find_iter(Input::new(&input))?
             .map(|mat| mat.end())
@@ -231,6 +211,8 @@ impl Uwu {
         }
 
         let mut buf = Vec::with_capacity(input.len());
+        let mut rng = Uwu::create_rng();
+
         let mut prev_idx = 0;
         for idx in matches {
             if rng.u8(0..self.emojis_chance) != 0 {
@@ -247,6 +229,11 @@ impl Uwu {
         buf.write_all(&input[prev_idx..])?;
 
         Ok(buf)
+    }
+
+    fn create_rng() -> fastrand::Rng {
+        let seed = 75777521; // 'uwu!' = 75 77 75 21
+        fastrand::Rng::with_seed(seed)
     }
 }
 
@@ -287,10 +274,14 @@ mod tests {
 
         assert_eq!(convert("very nice"), "vewy nyice");
         assert_eq!(convert("very elegant solution"), "vewy ewegant s-sowution");
-        assert_eq!(convert("master! suki!"), "mastew! ^^ suki! ʘwʘ");
+        assert_eq!(convert("master! suki!"), "mastew! o.O suki! ^•ﻌ•^");
+        assert_eq!(
+            convert("my master, I have a question"),
+            "my mastew, o.O i-i have a-a qwuestion"
+        );
         assert_eq!(
             convert("The quick brown fox jumps over the lazy dog"),
-            "the quick b-bwown fox j-jumps ovew the wazy dog"
+            "the qwuick b-bwown fox j-jumps ovew the wazy dog"
         );
     }
 

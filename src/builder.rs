@@ -7,7 +7,6 @@ use crate::Uwu;
 /// uwu::UwuBuilder::new()
 ///     .lowercase()
 ///     .expressions()
-///     .nya()
 ///     .w_replace()
 ///     .stutter(4)
 ///     .emojis(1)
@@ -20,9 +19,6 @@ pub struct UwuBuilder {
     pub lowercase: bool,
     /// Enables expression replacement, e.g. 'what' becomes 'nani'.
     pub expressions: bool,
-    /// Enables nyanification. Words started with 'n' will be appended a 'y', e.g. 'nanomachines'
-    /// becomes 'nyanomachines'.
-    pub nya: bool,
     /// Enables replacement of 'l' and 'r' with 'w', e.g. 'lovely' becomes 'wovewy'.
     pub w_replace: bool,
     /// Enables stutter, e.g. 'hello' becomes 'h-hello'.
@@ -52,13 +48,6 @@ impl UwuBuilder {
     /// Enables expression replacement, e.g. 'what' becomes 'nani'.
     pub fn expressions(&mut self) -> &mut Self {
         self.expressions = true;
-        self
-    }
-
-    /// Enables nyanification. Words started with 'n' will be appended a 'y', e.g. 'nanomachines'
-    /// becomes 'nyanomachines'.
-    pub fn nya(&mut self) -> &mut Self {
-        self.nya = true;
         self
     }
 
@@ -93,7 +82,6 @@ impl From<&UwuBuilder> for Uwu {
         Self {
             lowercase: builder.lowercase,
             expressions: builder.expressions,
-            nya: builder.nya,
             w_replace: builder.w_replace,
             stutter: builder.stutter,
             stutter_chance: builder.stutter_chance,
@@ -118,7 +106,6 @@ mod tests {
         let builder_ver = Uwu::builder()
             .lowercase()
             .expressions()
-            .nya()
             .w_replace()
             .stutter(4)
             .emojis(1)
@@ -127,7 +114,6 @@ mod tests {
         let manual_ver = Uwu {
             lowercase: true,
             expressions: true,
-            nya: true,
             w_replace: true,
             stutter: true,
             stutter_chance: 4,

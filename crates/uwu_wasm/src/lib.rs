@@ -15,9 +15,6 @@ pub struct UwuOptions {
     pub lowercase: bool,
     /// Enables expression replacement, e.g. 'what' becomes 'nani'.
     pub expressions: bool,
-    /// Enables nyanification. Words started with 'n' will be appended a 'y', e.g. 'nanomachines'
-    /// becomes 'nyanomachines'.
-    pub nya: bool,
     /// Enables replacement of 'l' and 'r' with 'w', e.g. 'lovely' becomes 'wovewy'.
     pub w_replace: bool,
     /// Enables stutter, e.g. 'hello' becomes 'h-hello'.
@@ -41,9 +38,6 @@ impl From<UwuOptions> for UwuBuilder {
         }
         if options.expressions {
             builder.expressions();
-        }
-        if options.nya {
-            builder.nya();
         }
         if options.w_replace {
             builder.w_replace();
