@@ -54,7 +54,7 @@ fn main() -> Result<(), UwuCliError> {
     trace!("Arguments: {args:?}");
 
     let input = read_input(&args)?;
-    let uwuified = uwu::uwuify(&input)?;
+    let uwuified = uwu::Uwu::new().uwuify(input)?;
     write_output(uwuified, &args)?;
 
     Ok(())

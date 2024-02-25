@@ -2,9 +2,10 @@
 
 A uwu package inspired by [Daniel Liu's uwu](https://github.com/Daniel-Liu-c0deb0t/uwu) that runs on modern browsers.
 
-## Quick Guide
+## Quick start
 
 Install the package with:
+
 ```shell
 npm install uwu-rs
 pnpm install uwu-rs
