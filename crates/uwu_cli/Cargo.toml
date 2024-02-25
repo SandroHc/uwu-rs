@@ -1,5 +1,6 @@
 [package]
 name = "uwu_cli"
+description = "uwuifying the terminal"
 version.workspace = true
 authors.workspace = true
 edition.workspace = true
@@ -7,8 +8,12 @@ repository.workspace = true
 license.workspace = true
 
 [dependencies]
-clap = { version = "4.5.1", features = ["derive"] }
+clap = { version = "4.5", features = ["derive"] }
 thiserror = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
 uwu = { workspace = true }
+
+[[bin]]
+name = "uwu"
+path = "src/main.rs"

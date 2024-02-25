@@ -12,7 +12,8 @@ use tracing_subscriber::util::SubscriberInitExt;
 use uwu::UwuError;
 
 #[derive(Parser, Debug)]
-#[command(version, about, long_about = None)]
+#[command(name = "uwu", version)]
+/// Converts text to an uwuified version.
 struct Cli {
     /// Input file to uwuify.
     #[arg(short, long, value_name = "FILE")]
