@@ -1,5 +1,6 @@
 use std::io::{Read, Write};
 use std::path::PathBuf;
+use std::process::ExitCode;
 
 use clap::Parser;
 use thiserror::Error;
@@ -38,17 +39,41 @@ struct Cli {
 
 #[derive(Error, Debug)]
 pub enum UwuCliError {
-    #[error("uwu error: {0}")]
+    #[error(transparent)]
     Uwu(#[from] UwuError),
-    #[error("log error: {0}")]
+    #[error("unable to log: {0}")]
     Log(#[from] tracing_subscriber::util::TryInitError),
     #[error("IO error: {0}")]
     Io(#[from] std::io::Error),
+    #[error("the file '{0}' does not exist")]
+    FileNotFound(String),
     #[error(transparent)]
     Unknown(#[from] Box<dyn std::error::Error + Send>),
 }
 
-fn main() -> Result<(), UwuCliError> {
+impl UwuCliError {
+    fn exit_code(&self) -> ExitCode {
+        ExitCode::from(match self {
+            UwuCliError::Uwu(..) => 1,
+            UwuCliError::Log(..) => 2,
+            UwuCliError::Io(..) => 3,
+            UwuCliError::FileNotFound { .. } => 4,
+            UwuCliError::Unknown(..) => 5,
+        })
+    }
+}
+
+fn main() -> ExitCode {
+    match entrypoint() {
+        Ok(_) => ExitCode::SUCCESS,
+        Err(err) => {
+            eprintln!("Error: {err}");
+            err.exit_code()
+        }
+    }
+}
+
+fn entrypoint() -> Result<(), UwuCliError> {
     let args = Cli::parse();
     init_log(&args)?;
 
@@ -86,7 +111,8 @@ fn init_log(args: &Cli) -> Result<(), UwuCliError> {
 fn read_input(args: &Cli) -> Result<String, UwuCliError> {
     if let Some(file) = &args.file {
         info!("Reading from file: {}", file.display());
-        let mut f = std::fs::File::open(file)?;
+        let mut f = std::fs::File::open(file)
+            .map_err(|_| UwuCliError::FileNotFound(file.display().to_string()))?;
         let mut buf = String::new();
         f.read_to_string(&mut buf)?;
         Ok(buf)
